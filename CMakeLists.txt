@@ -22,7 +22,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(raylib)
 
-add_executable(root_simulator src/main.cpp)
+add_executable(root_simulator
+    src/main.cpp
+    src/app.cpp
+    src/viewport.cpp
+    src/orbit_camera.cpp
+    src/root_scene.cpp
+    src/overlay.cpp
+)
+target_include_directories(root_simulator PRIVATE include)
 target_link_libraries(root_simulator PRIVATE raylib)
 
 if(EMSCRIPTEN)
