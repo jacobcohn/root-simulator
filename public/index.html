@@ -11,7 +11,6 @@
       height: 100%;
       overflow: hidden;
       background: #0a0c12;
-      font-family: monospace;
     }
     canvas {
       display: block;
@@ -20,105 +19,10 @@
       outline: none;
       background: #0a0c12;
     }
-    .controls {
-      position: fixed;
-      top: 96px;
-      left: 28px;
-      z-index: 10;
-      width: min(320px, calc(100vw - 32px));
-      padding: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 14px;
-      background: rgba(15, 18, 27, 0.82);
-      color: #f4ead8;
-      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
-      backdrop-filter: blur(12px);
-      box-sizing: border-box;
-    }
-    .control {
-      display: grid;
-      gap: 6px;
-      margin-bottom: 13px;
-    }
-    .control label {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      font-size: 13px;
-      color: rgba(244, 234, 216, 0.9);
-    }
-    .control output {
-      color: rgba(244, 234, 216, 0.6);
-      font-variant-numeric: tabular-nums;
-    }
-    input[type="range"] {
-      width: 100%;
-      accent-color: #c99b5f;
-    }
-    .generate-button {
-      width: 100%;
-      margin-top: 4px;
-      padding: 10px 12px;
-      border: 0;
-      border-radius: 10px;
-      background: #c99b5f;
-      color: #171108;
-      font-family: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .generate-button:hover {
-      background: #ddb06f;
-    }
   </style>
 </head>
 <body>
   <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
-
-  <aside class="controls" aria-label="Root generation controls">
-    <div class="control">
-      <label for="taproot-length">Taproot Length <output>6.0</output></label>
-      <input id="taproot-length" type="range" min="2" max="10" step="0.1" value="6">
-    </div>
-
-    <div class="control">
-      <label for="root-spread">Root Spread <output>1.0</output></label>
-      <input id="root-spread" type="range" min="0" max="2" step="0.05" value="1">
-    </div>
-
-    <div class="control">
-      <label for="lateral-density">Lateral Density <output>1.0</output></label>
-      <input id="lateral-density" type="range" min="0" max="2" step="0.05" value="1">
-    </div>
-
-    <div class="control">
-      <label for="fine-root-density">Fine Root Density <output>0.7</output></label>
-      <input id="fine-root-density" type="range" min="0" max="2" step="0.05" value="0.7">
-    </div>
-
-    <div class="control">
-      <label for="curvature">Curvature <output>0.5</output></label>
-      <input id="curvature" type="range" min="0" max="1" step="0.01" value="0.5">
-    </div>
-
-    <button class="generate-button" type="button">Generate</button>
-  </aside>
-
-  <script>
-    document.querySelectorAll('.control input[type="range"]').forEach((slider) => {
-      const output = slider.closest('.control').querySelector('output');
-      const updateOutput = () => {
-        const step = slider.step || '1';
-        const decimals = step.includes('.') ? step.split('.')[1].length : 0;
-        output.value = Number(slider.value).toFixed(decimals);
-        output.textContent = output.value;
-      };
-
-      slider.addEventListener('input', updateOutput);
-      updateOutput();
-    });
-  </script>
-
   <script>
     window.Module = {
       canvas: document.getElementById('canvas'),
