@@ -2,6 +2,8 @@
 
 #include "orbit_camera.hpp"
 #include "overlay.hpp"
+#include "root_generator.hpp"
+#include "root_presets.hpp"
 #include "root_scene.hpp"
 #include "viewport.hpp"
 
@@ -26,7 +28,7 @@ void InitApp() {
     InitWindow(viewport.width, viewport.height, "Root Simulator");
 
     ResizeCanvasToViewport(viewport);
-    rootSystem = CreateSampleDicotRootSystem();
+    rootSystem = GenerateRootSystem(CreateDefaultRootGenerationParams());
     ResetCameraOrbit(orbitCamera);
     UpdateCameraFromOrbit(orbitCamera);
     SetTargetFPS(60);

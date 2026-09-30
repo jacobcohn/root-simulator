@@ -27,6 +27,8 @@ add_executable(root_simulator
     src/app.cpp
     src/viewport.cpp
     src/orbit_camera.cpp
+    src/root_generator.cpp
+    src/root_presets.cpp
     src/root_scene.cpp
     src/overlay.cpp
 )
