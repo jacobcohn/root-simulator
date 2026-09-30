@@ -1,116 +1,53 @@
 # Root Simulator
 
-A minimal browser-only C++23/raylib/WebAssembly proof of concept for a future procedural plant-root simulator. This currently verifies the web build, responsive canvas, animation, and mouse input foundation only; it does **not** implement procedural root generation or simulation.
+**Live project:** [https://jacobcohn.github.io/root-simulator/](https://jacobcohn.github.io/root-simulator/)
 
-## Technology
+![Root Simulator screenshot](docs/root-simulator-screenshot.png)
 
-- C++23
-- raylib 5.5, fetched by CMake
-- CMake 3.22+
-- Emscripten 6.0.10/WebAssembly
-- GitHub Actions + GitHub Pages
+Root Simulator is an interactive artwork made for the class assignment **“Making it Visible.”** The assignment asks students to create an artwork or experience that reveals plant roots: a hidden plant part that is usually underground, unseen, and outside of everyday attention.
 
-## Requirements
+This project makes an imagined root system visible. A viewer can rotate around the roots, open a parameter panel, change how the roots grow, and generate new forms. The piece is not meant to be an exact scientific simulation of one plant species. Instead, it uses procedural growth as an artistic way to show roots as active, complex, and variable structures.
 
-- macOS, Linux, or WSL for local builds
-- CMake 3.22 or newer
-- Python 3 for a local static web server
-- Emscripten SDK for WebAssembly builds
+Built with C++, raylib, WebAssembly, and GitHub Pages.
 
-## Initial Emscripten setup on macOS
+## Class context
 
-One common setup is:
+The assignment prompt asks:
 
-```sh
-mkdir -p ~/Library/Developer
-git clone https://github.com/emscripten-core/emsdk.git ~/Library/Developer/emsdk
-cd ~/Library/Developer/emsdk
-./emsdk install 6.0.10
-./emsdk activate 6.0.10
-source ./emsdk_env.sh
-```
+> “An artwork, as a part, can point a viewer’s or participant’s imagination towards what isn’t explicitly shown, but must certainly be there. What are the active connections and important details teeming just out of view?”  
+> — Andrew S. Yang, *Aesthetics of Hidden Ecologies*
 
-This keeps the SDK with other user-level developer tools instead of directly in your home directory. Run `source ~/Library/Developer/emsdk/emsdk_env.sh` in each new terminal before building, or add that source command to your shell startup file.
+Root Simulator responds to this prompt by revealing an underground form that is normally hidden. The visible root system is shaped by invisible rules: length, branching, angle, and randomness. These controls suggest the unseen conditions that affect real roots, such as soil, gravity, water, nutrients, obstacles, and chance.
 
-## Build
+## Concept
 
-From the repository root:
+Roots support the visible plant world, but they are usually concealed. This piece treats roots as an unseen architecture: branching, searching, adapting, and spreading beneath the surface.
 
-```sh
-emcmake cmake -S . -B build-web -DCMAKE_BUILD_TYPE=Release
-cmake --build build-web --parallel
-```
+The viewer can adjust different orders of roots:
 
-The web files are generated in `build-web/`:
+- **Primary roots**
+- **Laterals**
+- **Fine roots**
 
-- `index.html`
-- `root_simulator.js`
-- `root_simulator.wasm`
+Each generated root system is different. By changing the parameters, the viewer can see how small invisible rules create larger visible forms. The work asks the viewer to consider the plant body below ground as something active and expressive, not just hidden support.
 
-Generated WebAssembly artifacts are intentionally ignored by Git and should not be committed.
+## Interaction
 
-## Local browser testing
+The viewer can:
 
-Serve the build directory over HTTP; do not open `index.html` directly from the filesystem.
+- Rotate around the root system
+- Zoom in and out
+- Open a parameter panel
+- Change root length, branch amount, angle, and randomness
+- Generate a new root system
+- Toggle automatic orbiting
 
-```sh
-cd build-web
-python3 -m http.server 8000
-```
+The interaction is meant to make the hidden system feel explorable. Instead of looking at a single fixed drawing of roots, the viewer can participate in revealing many possible underground structures.
 
-Then open:
+## Artist statement
 
-```text
-http://localhost:8000/
-```
+Root Simulator makes plant roots visible by turning hidden growth rules into an interactive visual form. The piece focuses on what is usually out of sight: the branching underground structure that allows visible plant life to exist. By letting the viewer alter the root system and generate new forms, the work points toward the complexity of hidden ecologies and the relationships between what is seen above ground and what must be present below it.
 
-Expected behavior:
+## Deployment
 
-- The canvas fills the browser viewport without page margins or scrollbars.
-- The raylib render size follows the canvas/viewport size, not a fixed 800x800 framebuffer.
-- Animation runs continuously.
-- The mouse marker follows the cursor and remains aligned after resize.
-- Clicking changes the placeholder drawing.
-- Resizing the browser keeps rendering correct.
-
-## Normal development loop
-
-After the initial `emcmake cmake` configure step, most edits only need:
-
-```sh
-cmake --build build-web --parallel
-```
-
-Refresh the browser tab served by `python3 -m http.server`.
-
-Re-run the `emcmake cmake ...` configure command if you change `CMakeLists.txt` or update dependencies.
-
-## Responsive canvas implementation
-
-`public/index.html` removes default margins and gives the canvas `100vw` by `100vh`. The C++ frame loop also queries the canvas CSS size through Emscripten browser APIs and updates the actual canvas/window render dimensions. This avoids relying only on CSS stretching and keeps mouse coordinates aligned with drawing coordinates.
-
-The files use relative paths only, so the app can be hosted from a GitHub Pages project URL such as:
-
-```text
-https://USERNAME.github.io/root-simulator/
-```
-
-## GitHub Pages deployment
-
-The workflow in `.github/workflows/deploy.yml` runs on pushes to `main` and can also be started manually. It:
-
-1. Checks out the repository.
-2. Installs Emscripten.
-3. Configures CMake with `emcmake`.
-4. Builds the raylib/WebAssembly application.
-5. Collects `index.html`, `root_simulator.js`, and `root_simulator.wasm`.
-6. Uploads the static site as a Pages artifact.
-7. Deploys it with the current GitHub Pages Actions workflow.
-
-Required repository settings on GitHub:
-
-1. Go to **Settings → Pages**.
-2. Set **Build and deployment → Source** to **GitHub Actions**.
-3. Ensure Actions are enabled for the repository.
-4. Push to the `main` branch.
-
+For deployment and build instructions, see [`DEPLOYMENT.md`](DEPLOYMENT.md).
