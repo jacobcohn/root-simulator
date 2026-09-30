@@ -12,10 +12,11 @@ constexpr Color kBackgroundColor{10, 12, 18, 255};
 
 Viewport viewport;
 OrbitCamera orbitCamera;
+RootSystem rootSystem;
 
 void DrawScene3D() {
     BeginMode3D(orbitCamera.camera);
-    DrawPlaceholderRoot();
+    DrawRootSystem(rootSystem);
     EndMode3D();
 }
 }
@@ -25,6 +26,7 @@ void InitApp() {
     InitWindow(viewport.width, viewport.height, "Root Simulator");
 
     ResizeCanvasToViewport(viewport);
+    rootSystem = CreateSampleDicotRootSystem();
     ResetCameraOrbit(orbitCamera);
     UpdateCameraFromOrbit(orbitCamera);
     SetTargetFPS(60);
