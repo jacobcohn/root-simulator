@@ -1,5 +1,6 @@
 #pragma once
 
+#include "root_generator.hpp"
 #include "viewport.hpp"
 
 struct RootOrderUiParams {
@@ -9,19 +10,9 @@ struct RootOrderUiParams {
     float randomness = 0.35f;
 };
 
-enum class RootPreset {
-    Default,
-    Deep,
-    Wide,
-    Dense,
-    Sparse,
-    Wild
-};
-
 struct RootControls {
     RootOrderUiParams orders[3]{};
     int selectedOrder = 0;
-    RootPreset selectedPreset = RootPreset::Default;
     bool visible = false;
     bool newRootRequested = false;
 };
@@ -30,4 +21,5 @@ void InitRootControls(RootControls& controls);
 void UpdateRootControls(RootControls& controls);
 bool RootControlsCaptureMouse(const RootControls& controls, const Viewport& viewport);
 bool ConsumeNewRootRequest(RootControls& controls);
+RootGenerationParams CreateRootGenerationParamsFromControls(const RootControls& controls);
 void DrawRootControls(RootControls& controls, const Viewport& viewport);

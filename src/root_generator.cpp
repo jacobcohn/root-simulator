@@ -198,7 +198,10 @@ Root MakeRoot(
 
     direction = Normalize(direction);
 
-    const float outwardBias = order == 0 ? 0.0f : std::max(0.0f, orderParams.outwardBias);
+    const Vector3 initialDirection = direction;
+    const float directionPersistence = order == 0 ? 0.25f : 0.9f;
+    const float downwardBias = order == 0 ? orderParams.downwardBias : orderParams.downwardBias * 0.12f;
+    const float outwardBias = order == 0 ? 0.0f : std::max(0.0f, orderParams.outwardBias) * 0.25f;
     const Vector3 outwardDirection = outwardBias > 0.0f
         ? LocalOutwardDirection(direction, random)
         : Vector3{0.0f, 0.0f, 0.0f};
@@ -206,7 +209,10 @@ Root MakeRoot(
     for (int segment = 1; segment <= segmentCount; ++segment) {
         const Vector3 point = root.points.back();
         const Vector3 desiredDirection = Normalize(Add(
-            Add(direction, Scale(Vector3{0.0f, -1.0f, 0.0f}, orderParams.downwardBias)),
+            Add(
+                Add(direction, Scale(initialDirection, directionPersistence)),
+                Scale(Vector3{0.0f, -1.0f, 0.0f}, downwardBias)
+            ),
             Add(
                 Scale(outwardDirection, outwardBias),
                 Scale(RandomUnitVector(random), orderParams.randomness)
@@ -254,16 +260,8 @@ void GenerateRoot(
     std::vector<float> branchRotations;
     branchRotations.reserve(branchSpawns.size());
 
-    if (!branchSpawns.empty()) {
-        const float rotationOffset = RandomFloat(random, 0.0f, kTwoPi);
-        const float rotationStep = kTwoPi / static_cast<float>(branchSpawns.size());
-
-        for (std::size_t i = 0; i < branchSpawns.size(); ++i) {
-            const float rotationJitter = RandomFloat(random, -0.4f * rotationStep, 0.4f * rotationStep);
-            branchRotations.push_back(rotationOffset + rotationStep * static_cast<float>(i) + rotationJitter);
-        }
-
-        std::shuffle(branchRotations.begin(), branchRotations.end(), random);
+    for (std::size_t i = 0; i < branchSpawns.size(); ++i) {
+        branchRotations.push_back(RandomFloat(random, 0.0f, kTwoPi));
     }
 
     for (std::size_t i = 0; i < branchSpawns.size(); ++i) {
@@ -272,9 +270,10 @@ void GenerateRoot(
         }
 
         const BranchSpawn& spawn = branchSpawns[i];
+        const RootOrderParams& childOrderParams = params.orders[static_cast<std::size_t>(childOrder)];
         const Vector3 childDirection = BranchDirection(
             spawn.direction,
-            RandomFloat(random, orderParams.branchAngleMinDegrees, orderParams.branchAngleMaxDegrees),
+            RandomFloat(random, childOrderParams.branchAngleMinDegrees, childOrderParams.branchAngleMaxDegrees),
             branchRotations[i]
         );
 
@@ -292,16 +291,32 @@ RootSystem GenerateRootSystem(const RootGenerationParams& params) {
     }
 
     std::mt19937 random(params.seed);
-    GenerateRoot(
-        rootSystem,
-        params,
+    const int primaryRootCount = RandomInt(
         random,
-        0,
-        Vector3{0.0f, 0.0f, 0.0f},
-        Vector3{0.0f, -1.0f, 0.0f},
-        -1,
-        -1
+        std::max(1, params.minPrimaryRoots),
+        std::max(1, params.maxPrimaryRoots)
     );
+
+    for (int i = 0; i < primaryRootCount; ++i) {
+        const Vector3 direction = primaryRootCount == 1
+            ? Vector3{0.0f, -1.0f, 0.0f}
+            : BranchDirection(
+                Vector3{0.0f, -1.0f, 0.0f},
+                RandomFloat(random, 4.0f, 22.0f),
+                RandomFloat(random, 0.0f, kTwoPi)
+            );
+
+        GenerateRoot(
+            rootSystem,
+            params,
+            random,
+            0,
+            Vector3{0.0f, 0.0f, 0.0f},
+            direction,
+            -1,
+            -1
+        );
+    }
 
     return rootSystem;
 }

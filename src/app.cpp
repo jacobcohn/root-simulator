@@ -4,7 +4,6 @@
 #include "overlay.hpp"
 #include "root_controls.hpp"
 #include "root_generator.hpp"
-#include "root_presets.hpp"
 #include "root_scene.hpp"
 #include "viewport.hpp"
 
@@ -19,7 +18,7 @@ RootSystem rootSystem;
 RootControls rootControls;
 
 void GenerateNewRandomRootSystem() {
-    rootSystem = GenerateRootSystem(CreateDefaultRootGenerationParams());
+    rootSystem = GenerateRootSystem(CreateRootGenerationParamsFromControls(rootControls));
 }
 
 void DrawScene3D() {

@@ -38,6 +38,8 @@ struct RootOrderParams {
 struct RootGenerationParams {
     unsigned int seed = 1;
     int maxRoots = 250;
+    int minPrimaryRoots = 1;
+    int maxPrimaryRoots = 1;
     Color crownColor{218, 184, 128, 255};
     std::vector<RootOrderParams> orders;
 };

@@ -51,7 +51,15 @@ void DrawRoot(const Root& root) {
 }
 
 void DrawRootSystem(const RootSystem& rootSystem) {
-    DrawSphere(Vector3{0.0f, 0.02f, 0.0f}, 0.105f, rootSystem.crownColor);
+    float primaryRadius = 0.105f;
+    for (const Root& root : rootSystem.roots) {
+        if (root.order == 0 && !root.radii.empty()) {
+            primaryRadius = std::max(primaryRadius, root.radii.front());
+        }
+    }
+
+    const float crownRadius = primaryRadius * 1.18f;
+    DrawSphere(Vector3{0.0f, crownRadius * 0.25f, 0.0f}, crownRadius, rootSystem.crownColor);
 
     for (const Root& root : rootSystem.roots) {
         DrawRoot(root);
