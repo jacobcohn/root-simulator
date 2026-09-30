@@ -103,7 +103,7 @@ Rectangle GetPanelBounds(const Viewport& viewport) {
 
 void ResetRootControlsToDefault(RootControls& controls) {
     controls.orders[0] = RootOrderUiParams{0.46f, 0.92f, 0.34f, 0.30f};
-    controls.orders[1] = RootOrderUiParams{0.46f, 0.84f, 0.58f, 0.38f};
+    controls.orders[1] = RootOrderUiParams{0.46f, 0.84f, 0.42f, 0.38f};
     controls.orders[2] = RootOrderUiParams{0.52f, 0.62f, 0.62f, 0.42f};
     controls.selectedOrder = 0;
 }
