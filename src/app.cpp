@@ -2,6 +2,7 @@
 
 #include "orbit_camera.hpp"
 #include "overlay.hpp"
+#include "root_controls.hpp"
 #include "root_generator.hpp"
 #include "root_presets.hpp"
 #include "root_scene.hpp"
@@ -15,6 +16,11 @@ constexpr Color kBackgroundColor{10, 12, 18, 255};
 Viewport viewport;
 OrbitCamera orbitCamera;
 RootSystem rootSystem;
+RootControls rootControls;
+
+void GenerateNewRandomRootSystem() {
+    rootSystem = GenerateRootSystem(CreateDefaultRootGenerationParams());
+}
 
 void DrawScene3D() {
     BeginMode3D(orbitCamera.camera);
@@ -28,7 +34,8 @@ void InitApp() {
     InitWindow(viewport.width, viewport.height, "Root Simulator");
 
     ResizeCanvasToViewport(viewport);
-    rootSystem = GenerateRootSystem(CreateDefaultRootGenerationParams());
+    InitRootControls(rootControls);
+    GenerateNewRandomRootSystem();
     ResetCameraOrbit(orbitCamera);
     UpdateCameraFromOrbit(orbitCamera);
     SetTargetFPS(60);
@@ -36,12 +43,22 @@ void InitApp() {
 
 void UpdateDrawFrame() {
     ResizeCanvasToViewport(viewport);
-    HandleCameraInput(orbitCamera);
+    UpdateRootControls(rootControls);
+    if (ConsumeNewRootRequest(rootControls)) {
+        GenerateNewRandomRootSystem();
+    }
+
+    if (!RootControlsCaptureMouse(rootControls, viewport)) {
+        HandleCameraInput(orbitCamera);
+    } else {
+        UpdateCameraFromOrbit(orbitCamera);
+    }
 
     BeginDrawing();
     ClearBackground(kBackgroundColor);
     DrawScene3D();
     DrawOverlay(viewport, orbitCamera);
+    DrawRootControls(rootControls, viewport);
     EndDrawing();
 }
 

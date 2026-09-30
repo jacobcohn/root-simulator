@@ -2,18 +2,23 @@
 
 #include "raylib.h"
 
+#include <cstdio>
+
 namespace {
 constexpr Color kOverlayTextColor{150, 160, 175, 255};
 }
 
 void DrawOverlay(const Viewport& viewport, const OrbitCamera& orbitCamera) {
-    DrawText("Root Simulator", 28, 24, 32, RAYWHITE);
-    DrawText("Drag: orbit  |  Wheel: zoom  |  A: auto-orbit  |  R: reset", 30, 62, 18, kOverlayTextColor);
-    DrawText(
-        orbitCamera.autoOrbit ? "Auto-orbit: on" : "Auto-orbit: off",
-        30,
-        viewport.height - 34,
-        18,
-        kOverlayTextColor
+    (void)viewport;
+
+    char controlsText[180]{};
+    std::snprintf(
+        controlsText,
+        sizeof(controlsText),
+        "Drag: rotate  |  Wheel: zoom  |  R: reset  |  P: parameters  |  A: %s",
+        orbitCamera.autoOrbit ? "no orbit" : "orbit"
     );
+
+    DrawText("Root Simulator", 28, 24, 32, RAYWHITE);
+    DrawText(controlsText, 30, 62, 18, kOverlayTextColor);
 }

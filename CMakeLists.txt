@@ -30,6 +30,7 @@ add_executable(root_simulator
     src/root_generator.cpp
     src/root_presets.cpp
     src/root_scene.cpp
+    src/root_controls.cpp
     src/overlay.cpp
 )
 target_include_directories(root_simulator PRIVATE include)
